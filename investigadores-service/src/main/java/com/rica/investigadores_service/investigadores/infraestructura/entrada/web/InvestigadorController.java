@@ -1,0 +1,49 @@
+package com.rica.investigadores_service.investigadores.infraestructura.entrada.web;
+
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.rica.investigadores_service.investigadores.dominio.Investigador;
+import com.rica.investigadores_service.investigadores.aplicacion.InvestigadorUseCase;
+
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/investigadores")
+public class InvestigadorController {
+
+    private final InvestigadorUseCase investigadorService;
+
+    public InvestigadorController(InvestigadorUseCase investigadorService) {
+        this.investigadorService = investigadorService;
+    }
+
+    @GetMapping
+    public List<InvestigadorResponse> listar() {
+        return investigadorService.listarTodos().stream()
+                .map(InvestigadorMapper::aResponse)
+                .toList();
+    }
+
+    @GetMapping("/{id}")
+    public InvestigadorResponse buscarPorId(@PathVariable Long id) {
+        Investigador investigador = investigadorService.buscarPorId(id);
+        return InvestigadorMapper.aResponse(investigador);
+    }
+
+    @PostMapping
+    public ResponseEntity<InvestigadorResponse> registrar(@Valid @RequestBody InvestigadorRequest request) {
+        Investigador guardado = investigadorService.registrar(
+            request.getNombreCompleto(),
+            request.getCorreoInstitucional(),
+            request.getGrupoInvestigacion()
+        );
+        InvestigadorResponse response = InvestigadorMapper.aResponse(guardado);
+        return ResponseEntity
+                .created(URI.create("/api/investigadores/" + guardado.getId()))
+                .body(response);
+    }
+}
