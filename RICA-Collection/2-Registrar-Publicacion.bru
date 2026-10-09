@@ -1,0 +1,23 @@
+meta {
+  name: 2 - Registrar Publicacion
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8081/api/publicaciones
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "titulo": "Arquitecturas de Microservicios con Spring Boot y MongoDB",
+    "resumen": "Estudio sobre integración de bases de datos relacionales y NoSQL.",
+    "correoAutor": "{{investigadorEmail}}"
+  }
+}

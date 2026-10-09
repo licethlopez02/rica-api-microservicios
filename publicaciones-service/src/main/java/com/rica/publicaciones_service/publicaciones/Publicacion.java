@@ -16,6 +16,7 @@ public class Publicacion {
     private String tipo;
     private Integer anio;
     private Map<String, String> detalles;
+    private boolean huerfana;
 
     public Publicacion() {
     }
@@ -66,5 +67,13 @@ public class Publicacion {
 
     public void setDetalles(Map<String, String> detalles) {
         this.detalles = detalles;
+    }
+
+    public boolean isHuerfana() {
+        return huerfana;
+    }
+
+    public void marcarComoHuerfana() {
+        this.huerfana = true;
     }
 }

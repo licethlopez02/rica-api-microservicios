@@ -2,8 +2,25 @@ server:
   port: 8081
 
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: publicaciones-service
+      auto-offset-reset: earliest  
+  grpc:
+    client:
+      channel:
+        investigadores:
+          target: static://localhost:9090
   application:
     name: publicaciones-service
   data:
     mongodb:
       uri: mongodb://localhost:27017/rica
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

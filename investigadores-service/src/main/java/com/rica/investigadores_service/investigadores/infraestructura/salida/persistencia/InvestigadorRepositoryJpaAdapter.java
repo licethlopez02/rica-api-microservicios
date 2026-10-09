@@ -13,7 +13,7 @@ import java.util.Optional;
 public class InvestigadorRepositoryJpaAdapter implements RepositorioInvestigadores{
     
     private final InvestigadorRepository investigadorRepository;
-
+    
     public InvestigadorRepositoryJpaAdapter(InvestigadorRepository investigadorRepository) {
         this.investigadorRepository = investigadorRepository;
     }
@@ -32,5 +32,15 @@ public class InvestigadorRepositoryJpaAdapter implements RepositorioInvestigador
 
     public Investigador guardar(Investigador investigador) {
         return investigadorRepository.save(investigador);
+    }
+
+    @Override
+    public Optional<Investigador> buscarPorCorreo(String correoInstitucional) {
+        return investigadorRepository.findByCorreoInstitucional_Valor(correoInstitucional);
+    }
+
+    @Override
+    public void eliminar(Investigador investigador) {
+        investigadorRepository.delete(investigador);
     }
 }
