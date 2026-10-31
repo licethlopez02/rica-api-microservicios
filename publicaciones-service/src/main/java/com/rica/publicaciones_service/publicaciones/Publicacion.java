@@ -21,6 +21,16 @@ public class Publicacion {
     public Publicacion() {
     }
 
+    public Publicacion(String id, String investigadorCorreo, String titulo, String tipo,
+                       int anio, Map<String, String> detalles) {
+        this.id = id;
+        this.investigadorCorreo = investigadorCorreo;
+        this.titulo = titulo;
+        this.tipo = tipo;
+        this.anio = anio;
+        this.detalles = detalles;
+    }
+
     public String getId() {
         return id;
     }
