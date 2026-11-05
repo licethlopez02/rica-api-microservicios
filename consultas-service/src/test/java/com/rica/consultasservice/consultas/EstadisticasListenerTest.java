@@ -4,10 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import tools.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -35,7 +32,7 @@ class EstadisticasListenerTest {
     }
 
     @Test
-    void cuentaUnaAltaNueva() throws JsonMappingException, JsonProcessingException {
+    void cuentaUnaAltaNueva() {
         when(eventosProcesados.primeraVez("investigadores.registrados-0-7")).thenReturn(true);
 
         listener.alRegistrarseInvestigador(registro(7, ALTA_VALIDA));
@@ -44,7 +41,7 @@ class EstadisticasListenerTest {
     }
 
     @Test
-    void ignoraUnEventoYaProcesado() throws JsonMappingException, JsonProcessingException {
+    void ignoraUnEventoYaProcesado() {
         when(eventosProcesados.primeraVez("investigadores.registrados-0-7")).thenReturn(false);
 
         listener.alRegistrarseInvestigador(registro(7, ALTA_VALIDA));
@@ -53,7 +50,7 @@ class EstadisticasListenerTest {
     }
 
     @Test
-    void noCuentaUnMensajeQueNoEsJsonValido() throws JsonMappingException, JsonProcessingException {
+    void noCuentaUnMensajeQueNoEsJsonValido() {
         listener.alRegistrarseInvestigador(registro(8, "esto no es json"));
 
         verify(contador, never()).contarAlta();
