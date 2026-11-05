@@ -8,10 +8,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Segundo consumidor del MISMO tópico, con su propio grupo: cada grupo recibe todos los
@@ -35,16 +33,8 @@ public class EstadisticasListener {
         this.objectMapper = objectMapper;
     }
 
-    public EstadisticasListener(RegistroEventosProcesados eventosProcesados2, ContadorAltas contador2,
-            JsonMapper jsonMapper) {
-                this.eventosProcesados = null;
-                this.contador = null;
-        //TODO Auto-generated constructor stub
-                this.objectMapper = new ObjectMapper();
-    }
-
     @KafkaListener(topics = "investigadores.registrados", groupId = "consultas-estadisticas")
-    public void alRegistrarseInvestigador(ConsumerRecord<String, String> registro) throws JsonMappingException, JsonProcessingException {
+    public void alRegistrarseInvestigador(ConsumerRecord<String, String> registro) {
         if (!esAltaValida(registro.value())) {
             log.warn("Estadísticas: mensaje no válido en {}-{}@{}, no se cuenta",
                     registro.topic(), registro.partition(), registro.offset());
@@ -62,11 +52,16 @@ public class EstadisticasListener {
         log.info("Estadísticas: alta contada ({}). Total: {}", idEvento, contador.total());
     }
 
-    private boolean esAltaValida(String mensaje) throws JsonMappingException, JsonProcessingException {
+    private boolean esAltaValida(String mensaje) {
+        if (mensaje == null || mensaje.isBlank()) {
+            return false;
+        }
+
         try {
-            objectMapper.readTree(mensaje).get("correoInstitucional").asText();
-            return true;
-        } catch (RuntimeException e) {
+            JsonNode evento = objectMapper.readTree(mensaje);
+            JsonNode correo = evento == null ? null : evento.get("correoInstitucional");
+            return correo != null && correo.isTextual() && !correo.asText().isBlank();
+        } catch (JsonProcessingException e) {
             return false;
         }
     }
