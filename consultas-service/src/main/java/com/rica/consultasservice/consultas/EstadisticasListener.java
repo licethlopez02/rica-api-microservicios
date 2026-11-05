@@ -3,9 +3,15 @@ package com.rica.consultasservice.consultas;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.ObjectMapper;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Segundo consumidor del MISMO tópico, con su propio grupo: cada grupo recibe todos los
@@ -20,6 +26,7 @@ public class EstadisticasListener {
     private final ContadorAltas contador;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public EstadisticasListener(RegistroEventosProcesados eventosProcesados,
                                 ContadorAltas contador,
                                 ObjectMapper objectMapper) {
@@ -28,8 +35,16 @@ public class EstadisticasListener {
         this.objectMapper = objectMapper;
     }
 
+    public EstadisticasListener(RegistroEventosProcesados eventosProcesados2, ContadorAltas contador2,
+            JsonMapper jsonMapper) {
+                this.eventosProcesados = null;
+                this.contador = null;
+        //TODO Auto-generated constructor stub
+                this.objectMapper = new ObjectMapper();
+    }
+
     @KafkaListener(topics = "investigadores.registrados", groupId = "consultas-estadisticas")
-    public void alRegistrarseInvestigador(ConsumerRecord<String, String> registro) {
+    public void alRegistrarseInvestigador(ConsumerRecord<String, String> registro) throws JsonMappingException, JsonProcessingException {
         if (!esAltaValida(registro.value())) {
             log.warn("Estadísticas: mensaje no válido en {}-{}@{}, no se cuenta",
                     registro.topic(), registro.partition(), registro.offset());
@@ -47,9 +62,9 @@ public class EstadisticasListener {
         log.info("Estadísticas: alta contada ({}). Total: {}", idEvento, contador.total());
     }
 
-    private boolean esAltaValida(String mensaje) {
+    private boolean esAltaValida(String mensaje) throws JsonMappingException, JsonProcessingException {
         try {
-            objectMapper.readTree(mensaje).get("correoInstitucional").asString();
+            objectMapper.readTree(mensaje).get("correoInstitucional").asText();
             return true;
         } catch (RuntimeException e) {
             return false;

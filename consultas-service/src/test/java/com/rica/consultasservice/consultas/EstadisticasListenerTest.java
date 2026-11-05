@@ -3,6 +3,10 @@ package com.rica.consultasservice.consultas;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import tools.jackson.databind.json.JsonMapper;
 
 import static org.mockito.Mockito.mock;
@@ -31,7 +35,7 @@ class EstadisticasListenerTest {
     }
 
     @Test
-    void cuentaUnaAltaNueva() {
+    void cuentaUnaAltaNueva() throws JsonMappingException, JsonProcessingException {
         when(eventosProcesados.primeraVez("investigadores.registrados-0-7")).thenReturn(true);
 
         listener.alRegistrarseInvestigador(registro(7, ALTA_VALIDA));
@@ -40,7 +44,7 @@ class EstadisticasListenerTest {
     }
 
     @Test
-    void ignoraUnEventoYaProcesado() {
+    void ignoraUnEventoYaProcesado() throws JsonMappingException, JsonProcessingException {
         when(eventosProcesados.primeraVez("investigadores.registrados-0-7")).thenReturn(false);
 
         listener.alRegistrarseInvestigador(registro(7, ALTA_VALIDA));
@@ -49,7 +53,7 @@ class EstadisticasListenerTest {
     }
 
     @Test
-    void noCuentaUnMensajeQueNoEsJsonValido() {
+    void noCuentaUnMensajeQueNoEsJsonValido() throws JsonMappingException, JsonProcessingException {
         listener.alRegistrarseInvestigador(registro(8, "esto no es json"));
 
         verify(contador, never()).contarAlta();
