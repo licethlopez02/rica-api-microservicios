@@ -39,3 +39,7 @@ producción. También se construye y valida la imagen una vez, lo que hace el
 proceso más reproducible. Los valores propios de cada entorno, como puertos,
 direcciones o credenciales, deben proporcionarse mediante configuración
 externa, no incorporarse en imágenes diferentes.
+
+## Evidencis CI
+![alt text](image-1.png)
+![alt text](image-2.png)
