@@ -1,0 +1,18 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: consultas-service
+  kafka:
+    consumer:
+      group-id: consultas-service-v2
+  mongodb:
+    uri: mongodb://localhost:27017/rica_consultas
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

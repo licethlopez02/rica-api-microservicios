@@ -21,6 +21,10 @@ public class Investigador {
     @Column(name = "grupo_investigacion", length = 150)
     private String grupoInvestigacion;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EstadoInvestigador estado = EstadoInvestigador.ACTIVO;
+
     public Investigador() {
     }
 
@@ -34,6 +38,18 @@ public class Investigador {
     public Investigador(long id, String anaTorres, String mail, String grupoInvestigacion) {
     }
 
+    public EstadoInvestigador getEstado() {
+        return estado;
+    }
+
+    public boolean estaEnEliminacion() {
+        return estado == EstadoInvestigador.EN_ELIMINACION;
+    }
+
+    public void marcarEnEliminacion() {
+        this.estado = EstadoInvestigador.EN_ELIMINACION;
+    }
+    
     public Long getId() {
         return id;
     }

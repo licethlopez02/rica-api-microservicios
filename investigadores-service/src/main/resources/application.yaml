@@ -2,9 +2,24 @@ server:
   port: 8080
 
 spring:
+  grpc:
+    server:
+      port: 9090
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: investigadores-service
+      auto-offset-reset: earliest
   application:
     name: investigadores-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/rica
+    url: jdbc:postgresql://localhost:5431/rica
     username: rica
     password: rica
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
