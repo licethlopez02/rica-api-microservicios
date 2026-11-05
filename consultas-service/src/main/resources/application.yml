@@ -4,14 +4,11 @@ server:
 spring:
   application:
     name: consultas-service
-  data:
-    mongodb:
-      # Base propia del lado de lectura: nada que ver con la base de publicaciones-service
-      uri: mongodb://localhost:27017/rica_consultas
-
   kafka:
     consumer:
       group-id: consultas-service-v2
+  mongodb:
+    uri: mongodb://localhost:27017/rica_consultas
 
 eureka:
   instance:
